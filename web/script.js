@@ -119,7 +119,9 @@ document.getElementById('form-cadastro').onsubmit = async (e) => {
 // --- GESTÃO DE PRODUTOS ---
 async function carregarProdutos() {
   try {
-    const res = await fetch(`${API_URL}/produto/listar`);
+    const res = await fetch(`${API_URL}/produto/listar`, {
+      headers: { 'x-user-id': String(currentUser.id) }
+    });
     produtosCache = await res.json();
     renderTabelaProdutos(produtosCache);
   } catch (err) {
@@ -164,7 +166,8 @@ document.getElementById('form-produto').onsubmit = async (e) => {
     custo: parseFloat(document.getElementById('prod-custo').value),
     quantidade: parseInt(document.getElementById('prod-qtd').value),
     estoqueMin: parseInt(document.getElementById('prod-min').value),
-    descricao: document.getElementById('prod-desc').value
+    descricao: document.getElementById('prod-desc').value,
+    idUsuario: currentUser.id
   };
 
   const url = id ? `${API_URL}/produto/atualizar/${id}` : `${API_URL}/produto/cadastrar`;
@@ -173,7 +176,7 @@ document.getElementById('form-produto').onsubmit = async (e) => {
   try {
     const res = await fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-user-id': String(currentUser.id) },
       body: JSON.stringify(body)
     });
     if (!res.ok) throw new Error('Erro ao salvar produto');
@@ -213,7 +216,10 @@ function resetFormProduto() {
 async function excluirProduto(id) {
   if (!confirm('Deseja realmente excluir este produto?')) return;
   try {
-    await fetch(`${API_URL}/produto/excluir/${id}`, { method: 'DELETE' });
+    await fetch(`${API_URL}/produto/excluir/${id}`, {
+      method: 'DELETE',
+      headers: { 'x-user-id': String(currentUser.id) }
+    });
     carregarProdutos();
     showAlert('produto-alert', 'Produto excluído!', 'success');
   } catch (err) {
@@ -238,7 +244,9 @@ function ordenarAlfabeticamente(lista) {
 
 async function carregarProdutosProducao() {
   try {
-    const res = await fetch(`${API_URL}/produto/listar`);
+    const res = await fetch(`${API_URL}/produto/listar`, {
+      headers: { 'x-user-id': String(currentUser.id) }
+    });
     let produtos = await res.json();
     
     produtos = ordenarAlfabeticamente(produtos);
