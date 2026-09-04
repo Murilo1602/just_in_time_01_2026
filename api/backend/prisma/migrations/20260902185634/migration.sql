@@ -36,5 +36,5 @@ CREATE TABLE `Producao` (
 -- AddForeignKey
 ALTER TABLE `Producao` ADD CONSTRAINT `Producao_idProduto_fkey` FOREIGN KEY (`idProduto`) REFERENCES `Produto`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
+-- AddForei
 ALTER TABLE `Producao` ADD CONSTRAINT `Producao_idUsuario_fkey` FOREIGN KEY (`idUsuario`) REFERENCES `Usuario`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
