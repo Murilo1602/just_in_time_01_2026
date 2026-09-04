@@ -1,10 +1,8 @@
 const API_URL = 'http://localhost:3000';
 
-// Estado da Aplicação
 let currentUser = JSON.parse(localStorage.getItem('user')) || null;
 let produtosCache = [];
 
-// --- INICIALIZAÇÃO E NAVEGAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
   if (currentUser) {
     showScreen('screen-dashboard');
@@ -31,7 +29,6 @@ function showScreen(screenId) {
   }
 }
 
-// Navegação de Login e Cadastro Inicial
 document.getElementById('link-go-register').onclick = (e) => {
   e.preventDefault();
   showScreen('screen-cadastro-user');
@@ -42,14 +39,12 @@ document.getElementById('link-go-login').onclick = (e) => {
   showScreen('screen-login');
 };
 
-// Navegação do Dashboard e Logout
 document.querySelectorAll('.btn-to-dashboard').forEach(b => b.onclick = () => showScreen('screen-dashboard'));
 
 document.getElementById('btn-logout').onclick = () => {
   localStorage.removeItem('user');
   currentUser = null;
   
-  // Reseta o nome exibido no elemento da interface
   document.getElementById('user-name-display').innerText = 'Usuário';
   
   showScreen('screen-login');
@@ -58,7 +53,6 @@ document.getElementById('btn-logout').onclick = () => {
 document.getElementById('nav-produtos').onclick = () => showScreen('screen-produtos');
 document.getElementById('nav-producao').onclick = () => showScreen('screen-producao');
 
-// --- AUTENTICAÇÃO ---
 document.getElementById('form-login').onsubmit = async (e) => {
   e.preventDefault();
   const email = document.getElementById('login-email').value;
@@ -86,7 +80,6 @@ document.getElementById('form-login').onsubmit = async (e) => {
   }
 };
 
-// --- CADASTRO DE USUÁRIOS ---
 document.getElementById('form-cadastro').onsubmit = async (e) => {
   e.preventDefault();
   
@@ -116,7 +109,6 @@ document.getElementById('form-cadastro').onsubmit = async (e) => {
   }
 };
 
-// --- GESTÃO DE PRODUTOS ---
 async function carregarProdutos() {
   try {
     const res = await fetch(`${API_URL}/produto/listar`, {
@@ -150,14 +142,12 @@ function renderTabelaProdutos(lista) {
   });
 }
 
-// Filtro / Busca
 document.getElementById('search-produto').oninput = (e) => {
   const termo = e.target.value.toLowerCase();
   const filtrados = produtosCache.filter(p => p.nome.toLowerCase().includes(termo));
   renderTabelaProdutos(filtrados);
 };
 
-// Cadastro e Edição de Produtos
 document.getElementById('form-produto').onsubmit = async (e) => {
   e.preventDefault();
   const id = document.getElementById('prod-id').value;
@@ -227,7 +217,6 @@ async function excluirProduto(id) {
   }
 }
 
-// --- GESTÃO DE PRODUÇÃO JIT ---
 function ordenarAlfabeticamente(lista) {
   let len = lista.length;
   for (let i = 0; i < len; i++) {

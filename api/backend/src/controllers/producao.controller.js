@@ -4,7 +4,6 @@ const cadastrar = async (req, res) => {
     try {
         const { idProduto, idUsuario, tipo, quantidade, dataProducao } = req.body;
 
-        // Busca o produto para verificar o estoque atual e limite mínimo
         const produto = await prisma.produto.findUnique({
             where: { id: Number(idProduto) }
         });
@@ -16,7 +15,6 @@ const cadastrar = async (req, res) => {
         const qtdMovimentada = Number(quantidade);
         let novaQuantidade = produto.quantidade;
 
-        // Processa Entrada ou Saída de Estoque
         if (tipo === "Fabricado") {
             novaQuantidade += qtdMovimentada;
         } else if (tipo === "Pedido") {
@@ -26,7 +24,6 @@ const cadastrar = async (req, res) => {
             novaQuantidade -= qtdMovimentada;
         }
 
-        // Registra a movimentação de produção
         const producao = await prisma.producao.create({
             data: {
                 idProduto: Number(idProduto),
@@ -37,13 +34,11 @@ const cadastrar = async (req, res) => {
             }
         });
 
-        // Atualiza a quantidade atual na tabela de produtos
         await prisma.produto.update({
             where: { id: Number(idProduto) },
             data: { quantidade: novaQuantidade }
         });
 
-        // Validação da regra Just In Time (Alerta de Estoque Mínimo)
         const alertaEstoque = novaQuantidade <= produto.estoqueMin;
         let mensagemAlerta = null;
 
